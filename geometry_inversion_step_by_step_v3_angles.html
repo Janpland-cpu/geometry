@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>题13｜反演法逐步证明演示</title>
+<style>
+:root {
+  --bg:#f5f7fb; --card:#ffffff; --ink:#182033; --muted:#667085;
+  --blue:#2563eb; --red:#dc2626; --green:#16803c; --orange:#d97706;
+  --purple:#7c3aed; --line:#d8dee9;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+.wrap{max-width:1460px;margin:0 auto;padding:22px}
+header{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 22px;margin-bottom:14px}
+h1{font-size:25px;margin:0 0 8px} .subtitle{color:var(--muted);line-height:1.7}
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:14px 0}
+button{border:1px solid #cbd5e1;background:#fff;border-radius:10px;padding:9px 14px;font-size:15px;cursor:pointer}
+button:hover{background:#f1f5f9} button.primary{background:#1d4ed8;color:#fff;border-color:#1d4ed8}
+#counter{font-weight:700;min-width:72px;text-align:center}
+.progress{height:7px;background:#e5e7eb;border-radius:999px;overflow:hidden;flex:1;min-width:180px}
+#bar{height:100%;background:#2563eb;width:0;transition:width .25s}
+.main{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(350px,.8fr);gap:14px}
+.diagramCard,.explainCard,.proofCard{background:var(--card);border:1px solid var(--line);border-radius:16px}
+.diagramCard{padding:12px}
+.panels{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.panel{border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;background:#fff;position:relative;transition:.25s}
+.panel.dim{opacity:.72;filter:grayscale(.08)}
+.panelTitle{font-weight:700;padding:10px 12px 0;color:#334155}
+svg{width:100%;height:auto;display:block}
+.explainCard{padding:20px;min-height:640px}
+#stepTitle{font-size:22px;margin:0 0 14px}
+#stepBody{font-size:16px;line-height:1.72}
+.eq{font-family:"Times New Roman","Noto Serif SC",serif;font-size:20px;text-align:center;background:#f8fafc;border-left:4px solid #94a3b8;padding:10px 12px;margin:12px 0;border-radius:8px}
+.eq.important{background:#eef4ff;border-left-color:#2563eb;font-weight:700}
+.eq.final{background:#ecfdf3;border-left-color:#16803c;font-size:23px}
+.fact,.theorem{padding:10px 12px;margin:9px 0;border-radius:9px}
+.fact{background:#f8fafc;border:1px solid #e2e8f0}
+.theorem{background:#fff7ed;border:1px solid #fed7aa}
+.tip{color:#475569;background:#f1f5f9;padding:10px 12px;border-radius:9px}
+details{margin:12px 0;border:1px solid #e2e8f0;border-radius:9px;padding:8px 10px;background:#fff}
+summary{font-weight:700;cursor:pointer}
+.verify{margin-top:14px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;display:none}
+.verify table{border-collapse:collapse;width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
+.verify td{padding:7px 8px;border-bottom:1px solid #edf0f4}
+.proofCard{padding:18px 22px;margin-top:14px;line-height:1.75}
+.proofCard h2{font-size:20px;margin-top:0}
+.small{font-size:13px;color:#64748b}
+kbd{border:1px solid #cbd5e1;border-bottom-width:2px;border-radius:5px;padding:1px 5px;background:#fff}
+/* SVG */
+.omega{fill:none;stroke:#111827;stroke-width:2.2}
+.omegaLabel{font-size:15px;font-weight:700;fill:#334155}
+.main{stroke:#263244;stroke-width:2;fill:none}
+.bisector{stroke:#dc2626;stroke-width:2.4}
+.altitude{stroke:#0f766e;stroke-width:2;stroke-dasharray:6 5}
+.condition{stroke:#7c3aed;stroke-width:1.8;fill:none}
+.thin{stroke-width:1.35;stroke-dasharray:4 4}
+.pt{stroke:#fff;stroke-width:1.2;fill:#111827}
+.originalPt{fill:#dc2626} .imagePt{fill:#2563eb} .kPt{fill:#16803c}
+.label{font-size:16px;font-weight:700;fill:#111827}
+.angleLabel{font-size:17px;font-weight:700;fill:#dc2626}
+.arc{fill:none;stroke-width:2} .arc.red{stroke:#dc2626} .arc.purple{stroke:#7c3aed} .arc.green{stroke:#16803c}
+.invCircle{fill:none;stroke:#7c3aed;stroke-width:1.8;stroke-dasharray:7 6;opacity:.8}
+.smallnote{font-size:13px;fill:#64748b}
+.rightmark{fill:none;stroke:#0f766e;stroke-width:1.8}
+.imageLine{stroke:#2563eb;stroke-width:2.4}
+.lineLabel{font-size:13px;fill:#2563eb}
+.gamma{fill:none;stroke:#d97706;stroke-width:2.4}
+.gammaLabel{font-size:20px;font-weight:700;fill:#d97706}
+.diameter{stroke:#d97706;stroke-width:1.8;stroke-dasharray:5 4}
+.aux{stroke:#16803c;stroke-width:2.2}
+.equalSide{stroke:#16803c;stroke-width:1.8;stroke-dasharray:5 4}
+.guide{stroke:#64748b;stroke-width:1.5;stroke-dasharray:5 5}
+.parallelX{stroke:#7c3aed;stroke-width:2.3}
+.parallelY{stroke:#0f766e;stroke-width:2.3}
+.parallelLabel{font-size:13px;font-weight:700;fill:#334155}
+.triX{fill:rgba(124,58,237,.05);stroke:#7c3aed;stroke-width:3}
+.triX2{fill:rgba(124,58,237,.03);stroke:#a78bfa;stroke-width:2}
+.triY{fill:rgba(15,118,110,.05);stroke:#0f766e;stroke-width:3}
+.triY2{fill:rgba(15,118,110,.03);stroke:#5eead4;stroke-width:2}
+.powerLine{stroke:#2563eb;stroke-width:3}
+.powerLine2{stroke:#d97706;stroke-width:3}
+.strong{filter:url(#glow)}
+.sigma{fill:none;stroke:#7c3aed;stroke-width:2.5;stroke-dasharray:8 5}
+.sigmaLabel{font-size:14px;font-weight:700;fill:#7c3aed}
+.targetCircle{fill:none;stroke:#16a34a;stroke-width:3;stroke-dasharray:8 5}
+.targetLabel{font-size:15px;font-weight:700;fill:#16803c}
+.layer{opacity:1;transition:opacity .25s} .hidden{display:none}
+@media (max-width:1050px){.main{grid-template-columns:1fr}.explainCard{min-height:auto}}
+@media (max-width:760px){.panels{grid-template-columns:1fr}.wrap{padding:10px}}
+
+.angleMark,.alphaLabel,.betaLabel,.gammaAngleLabel,.sumLabel,.diffLabel,.auxAngleLabel{
+  font-size:16px;font-weight:800;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round
+}
+.alphaLabel{fill:#dc2626}.betaLabel{fill:#7c3aed}.gammaAngleLabel{fill:#0284c7}
+.sumLabel{fill:#c2410c}.diffLabel{fill:#16803c}.auxAngleLabel{fill:#475569;font-size:14px}
+.alphaArc{stroke:#dc2626;stroke-width:3}.alphaArc2{stroke:#ef4444;stroke-width:2.5;stroke-dasharray:4 3}
+.betaArc{stroke:#7c3aed;stroke-width:3}.gammaArc{stroke:#0284c7;stroke-width:3}
+.sumArc{stroke:#c2410c;stroke-width:3}.diffArc{stroke:#16803c;stroke-width:3}
+.auxAngleArc{stroke:#64748b;stroke-width:2;stroke-dasharray:3 3}
+.simTriX{fill:rgba(124,58,237,.05);stroke:#7c3aed;stroke-width:2.8}
+.simTriY{fill:rgba(2,132,199,.05);stroke:#0284c7;stroke-width:2.8}
+.calloutText,.angleExplain,.parallelConclusion{
+  font-size:13px;font-weight:700;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round
+}
+.calloutText{fill:#334155}.angleExplain{fill:#475569}.parallelConclusion{fill:#166534;font-size:14px}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>题 13｜反演法：Python 精确构图 + HTML 逐步证明</h1>
+  <div class="subtitle">
+    题意：△ABC 内接于圆 Ω，AD 为 ∠A 的角平分线，M 为 AD 中点，X、Y∈Ω 且
+    ∠AXM=∠AYM=½∠BAC，AH⊥BC。证明 D、H、X、Y 四点共圆。<br>
+    <span class="small">操作：点击“下一步”，或用键盘 <kbd>←</kbd> <kbd>→</kbd>。左侧原图在每一步都保留，右侧逐步显示反演像；SAS、平行线和正弦定理用到的角均直接画在图上；图中所有点由 Python 几何计算生成，不是手工摆放。</span>
+  </div>
+  <div class="toolbar">
+    <button id="prev">← 上一步</button>
+    <button id="next" class="primary">下一步 →</button>
+    <button id="auto">自动播放</button>
+    <button id="verifyBtn">显示 Python 数值验证</button>
+    <span id="counter">1 / 14</span>
+    <div class="progress"><div id="bar"></div></div>
+  </div>
+</header>
+
+<div class="main">
+  <section class="diagramCard">
+    <div class="panels">
+      <div class="panel" id="origPanel">
+        <div class="panelTitle">原图（始终保留作参照）
+          <div class="small" style="font-weight:400;margin-top:3px">这里始终显示 B、C 和圆 O</div>
+        </div>
+        
+<svg id="origSvg" viewBox="0 0 620 560" role="img" aria-label="原图精确构图">
+  <defs>
+    <filter id="glow"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <g id="o-base" class="layer">
+    <circle cx="285.12" cy="285.12" r="237.18" class="omega" />
+    <text x="486" y="105" class="omegaLabel">圆 O（Ω）</text>
+    <line x1="413.12" y1="85.44" x2="54.72" y2="341.44" class="main" />
+    <line x1="413.12" y1="85.44" x2="515.52" y2="341.44" class="main" />
+    <line x1="54.72" y1="341.44" x2="515.52" y2="341.44" class="main" />
+    <line x1="413.12" y1="85.44" x2="338.11" y2="341.44" class="bisector" />
+    <line x1="413.12" y1="85.44" x2="413.12" y2="341.44" class="altitude" />
+    <line x1="413.12" y1="85.44" x2="231.96" y2="53.97" class="condition" />
+    <line x1="231.96" y1="53.97" x2="375.62" y2="213.44" class="condition thin" />
+    <line x1="413.12" y1="85.44" x2="521.89" y2="271.05" class="condition" />
+    <line x1="521.89" y1="271.05" x2="375.62" y2="213.44" class="condition thin" />
+    <circle cx="413.12" cy="85.44" r="4.7" class="pt"/><text x="421.12" y="76.44" class="label">A</text>
+    <circle cx="54.72" cy="341.44" r="4.7" class="pt"/><text x="36.72" y="357.44" class="label">B</text>
+    <circle cx="515.52" cy="341.44" r="4.7" class="pt"/><text x="523.52" y="357.44" class="label">C</text>
+    <circle cx="338.11" cy="341.44" r="4.7" class="pt"/><text x="324.11" y="358.44" class="label">D</text>
+    <circle cx="413.12" cy="341.44" r="4.7" class="pt"/><text x="420.12" y="358.44" class="label">H</text>
+    <circle cx="375.62" cy="213.44" r="4.7" class="pt"/><text x="383.62" y="205.44" class="label">M</text>
+    <circle cx="231.96" cy="53.97" r="4.7" class="pt"/><text x="211.96" y="45.97" class="label">X</text>
+    <circle cx="521.89" cy="271.05" r="4.7" class="pt"/><text x="530.89" y="264.05" class="label">Y</text>
+  </g>
+  <g id="o-angles" class="layer hidden">
+    <polyline points="386.04,104.78 386.54,105.47 387.06,106.14 387.60,106.80 388.16,107.45 388.73,108.08 389.32,108.70 389.92,109.30 390.54,109.89 391.17,110.46 391.82,111.01 392.48,111.55 393.16,112.07 393.84,112.57 394.54,113.05 395.26,113.52 395.98,113.97 396.72,114.40 397.46,114.81 398.22,115.20 398.99,115.57 399.76,115.92 400.55,116.25 401.34,116.57 402.14,116.86 402.95,117.13 403.76,117.38" class="arc red" />
+    <polyline points="403.76,117.38 404.58,117.61 405.41,117.81 406.24,118.00 407.08,118.17 407.92,118.31 408.76,118.43 409.60,118.53 410.45,118.61 411.30,118.67 412.15,118.71 413.01,118.72 413.86,118.71 414.71,118.68 415.56,118.63 416.41,118.56 417.25,118.46 418.10,118.35 418.94,118.21 419.77,118.05 420.61,117.87 421.43,117.66 422.26,117.44 423.07,117.20 423.88,116.93 424.68,116.65 425.48,116.34" class="arc red" />
+    <text x="385.84" y="123.84" class="angleLabel">α</text>
+    <text x="415.37" y="132.49" class="angleLabel">α</text>
+    <polyline points="258.19,58.53 258.07,59.20 257.93,59.86 257.77,60.53 257.59,61.18 257.40,61.84 257.19,62.49 256.96,63.13 256.72,63.77 256.46,64.40 256.18,65.02 255.89,65.64 255.59,66.24 255.27,66.85 254.93,67.44 254.58,68.02 254.21,68.60 253.83,69.16 253.43,69.71 253.02,70.26 252.60,70.79 252.16,71.32 251.71,71.83 251.25,72.33 250.77,72.81 250.28,73.29 249.78,73.75" class="arc purple" />
+    <polyline points="508.43,248.08 507.84,248.43 507.27,248.80 506.70,249.18 506.15,249.58 505.60,249.99 505.07,250.41 504.55,250.85 504.04,251.30 503.54,251.76 503.05,252.24 502.57,252.73 502.11,253.23 501.66,253.74 501.22,254.26 500.80,254.80 500.39,255.34 500.00,255.90 499.62,256.46 499.25,257.04 498.90,257.62 498.56,258.21 498.24,258.81 497.94,259.42 497.65,260.04 497.37,260.66 497.11,261.30" class="arc purple" />
+  </g>
+
+  <g id="o-simX" class="layer hidden">
+    <polyline points="413.12,85.44 231.96,53.97 375.62,213.44 413.12,85.44" class="simTriX"/>
+    <polyline points="381.59,79.96 381.35,81.61 381.19,83.27 381.12,84.93 381.14,86.60 381.24,88.26 381.43,89.92 381.71,91.56 382.07,93.19 382.52,94.79 383.05,96.37 383.65,97.92 384.34,99.44 385.11,100.92 385.96,102.35 386.87,103.74 387.86,105.09 388.92,106.37 390.04,107.60 391.22,108.78 392.47,109.88 393.77,110.93 395.12,111.90 396.52,112.80 397.97,113.63 399.46,114.38 400.98,115.05 402.54,115.64 404.12,116.15" class="arc betaArc" /><text x="373.22" y="110.28" class="betaLabel">β</text>
+    <polyline points="259.55,58.76 259.43,59.42 259.29,60.07 259.14,60.72 258.97,61.36 258.78,62.00 258.59,62.63 258.37,63.26 258.14,63.89 257.90,64.51 257.64,65.12 257.37,65.73 257.08,66.33 256.78,66.92 256.47,67.51 256.14,68.09 255.80,68.66 255.44,69.22 255.07,69.78 254.69,70.32 254.29,70.86 253.89,71.38 253.47,71.90 253.04,72.40 252.59,72.90 252.14,73.39 251.67,73.86 251.19,74.32 250.70,74.77" class="arc alphaArc" /><text x="269.60" y="74.76" class="alphaLabel">α</text>
+    <text x="175" y="104" class="calloutText">∠XAM = β</text>
+    <text x="174" y="129" class="calloutText">∠AXM = α（题设）</text>
+  </g>
+
+  <g id="o-simY" class="layer hidden">
+    <polyline points="413.12,85.44 521.89,271.05 375.62,213.44 413.12,85.44" class="simTriY"/>
+    <polyline points="436.88,125.99 435.69,126.66 434.48,127.30 433.26,127.91 432.01,128.48 430.75,129.01 429.48,129.50 428.19,129.96 426.88,130.38 425.57,130.76 424.25,131.10 422.91,131.41 421.57,131.67 420.22,131.90 418.86,132.09 417.50,132.24 416.14,132.34 414.77,132.41 413.41,132.44 412.04,132.43 410.67,132.38 409.31,132.29 407.94,132.15 406.59,131.98 405.24,131.77 403.89,131.52 402.55,131.24 401.22,130.91 399.91,130.54" class="arc gammaArc" /><text x="420.70" y="146.98" class="gammaAngleLabel">γ</text>
+    <polyline points="508.24,247.76 507.69,248.09 507.15,248.43 506.61,248.79 506.09,249.16 505.57,249.54 505.07,249.93 504.57,250.34 504.08,250.76 503.60,251.18 503.14,251.62 502.68,252.08 502.24,252.54 501.80,253.01 501.38,253.49 500.97,253.98 500.57,254.49 500.18,255.00 499.80,255.52 499.44,256.05 499.09,256.59 498.75,257.13 498.43,257.69 498.12,258.25 497.82,258.82 497.54,259.39 497.27,259.97 497.01,260.56 496.77,261.16" class="arc alphaArc" /><text x="489.98" y="243.74" class="alphaLabel">α</text>
+    <text x="455" y="165" class="calloutText">∠YAM = γ</text>
+    <text x="452" y="190" class="calloutText">∠AYM = α（题设）</text>
+  </g>
+
+  <g id="o-inv-ref" class="layer hidden">
+    <circle cx="413.12" cy="85.44" r="188.63" class="invCircle" />
+    <text x="429.12" y="130.44" class="smallnote">反演圆：r² = AM·AD</text>
+  </g>
+  <g id="o-final" class="layer hidden">
+    <circle cx="375.62" cy="164.26" r="181.11" class="targetCircle" />
+    <text x="453.49" y="48.35" class="targetLabel">ω：过 D,H,X,Y</text>
+  </g>
+  <g id="o-right" class="layer">
+    <!-- H 处直角记号 -->
+    <path d="M 399.12,341.44 L 399.12,327.44 L 413.12,327.44" class="rightmark"/>
+  </g>
+</svg>
+
+      </div>
+      <div class="panel" id="invPanel">
+        <div class="panelTitle">反演后的图
+          <div class="small" style="font-weight:400;margin-top:3px">圆 O → 直线 ℓ；B,C → B′,C′</div>
+        </div>
+        
+<svg id="invSvg" viewBox="0 0 620 560" role="img" aria-label="反演后的精确构图">
+  <g id="i-base" class="layer hidden">
+    <line x1="24.00" y1="31.51" x2="596.00" y2="398.18" class="imageLine" />
+    <text x="36.00" y="21.51" class="lineLabel">ℓ = Ω 的反演像</text>
+    <circle cx="346.47" cy="104.62" r="4.7" class="pt originalPt"/><text x="354.47" y="95.62" class="label">A</text>
+    <circle cx="247.89" cy="175.03" r="4.7" class="pt imagePt"/><text x="227.89" y="166.03" class="label">B′</text>
+    <circle cx="418.34" cy="284.29" r="4.7" class="pt imagePt"/><text x="426.34" y="276.29" class="label">C′</text>
+    <circle cx="60.57" cy="54.95" r="4.7" class="pt imagePt"/><text x="38.57" y="46.95" class="label">X′</text>
+    <circle cx="471.86" cy="318.60" r="4.7" class="pt imagePt"/><text x="479.86" y="336.60" class="label">Y′</text>
+  </g>
+  <g id="i-gamma" class="layer hidden">
+    <circle cx="346.47" cy="208.83" r="104.21" class="gamma" />
+    <circle cx="290.23" cy="296.56" r="4.7" class="pt originalPt"/><text x="272.23" y="286.56" class="label">M</text>
+    <circle cx="346.47" cy="313.04" r="4.7" class="pt imagePt"/><text x="354.47" y="331.04" class="label">H′</text>
+    <line x1="346.47" y1="104.62" x2="346.47" y2="313.04" class="diameter" />
+    <text x="406.91" y="144.22" class="gammaLabel">Γ</text>
+    <path d="M 290.23,296.56 l 0,15 l 15,0" class="rightmark"/>
+  </g>
+  <g id="i-D" class="layer hidden">
+    <circle cx="233.99" cy="488.51" r="4.7" class="pt originalPt"/><text x="216.99" y="506.51" class="label">D</text>
+    <line x1="346.47" y1="104.62" x2="233.99" y2="488.51" class="bisector" />
+  </g>
+  <g id="i-K" class="layer hidden">
+    <line x1="290.23" y1="296.56" x2="561.45" y2="376.03" class="aux" />
+    <line x1="346.47" y1="104.62" x2="561.45" y2="376.03" class="equalSide" />
+    <line x1="233.99" y1="488.51" x2="561.45" y2="376.03" class="equalSide" />
+    <circle cx="561.45" cy="376.03" r="4.7" class="pt kPt"/><text x="569.45" y="393.03" class="label">K</text>
+    <polyline points="369.35,133.51 368.28,134.33 367.17,135.11 366.04,135.85 364.88,136.55 363.69,137.20 362.48,137.81 361.25,138.38 360.01,138.90 358.74,139.37 357.45,139.80 356.15,140.18 354.84,140.51 353.52,140.79 352.19,141.03 350.84,141.21 349.50,141.35 348.15,141.43 346.79,141.47 345.44,141.46 344.09,141.39 342.74,141.28 341.40,141.12 340.06,140.91 338.73,140.65 337.41,140.34 336.11,139.98" class="arc green" />
+    <polyline points="244.35,453.14 245.64,453.55 246.92,454.00 248.18,454.50 249.42,455.04 250.64,455.63 251.83,456.26 253.00,456.94 254.15,457.66 255.27,458.42 256.36,459.22 257.42,460.06 258.45,460.94 259.45,461.86 260.41,462.81 261.33,463.80 262.22,464.82 263.07,465.87 263.88,466.96 264.66,468.07 265.39,469.21 266.07,470.37 266.72,471.56 267.32,472.78 267.87,474.01 268.38,475.27 268.85,476.54" class="arc green" />
+    <text x="357.48" y="161.14" class="angleLabel">θ</text>
+    <text x="273.76" y="446.87" class="angleLabel">θ</text>
+    <text x="256.23" y="327.56" class="smallnote">M 是 AD 中点</text>
+  </g>
+  <g id="i-parallel" class="layer hidden">
+    <line x1="346.47" y1="104.62" x2="247.89" y2="175.03" class="guide" />
+    <line x1="346.47" y1="104.62" x2="418.34" y2="284.29" class="guide" />
+    <line x1="233.99" y1="488.51" x2="60.57" y2="54.95" class="parallelX" />
+    <line x1="233.99" y1="488.51" x2="471.86" y2="318.60" class="parallelY" />
+    <text x="111.28" y="263.73" class="parallelLabel">DX′ ∥ AC</text>
+    <text x="357.93" y="418.56" class="parallelLabel">DY′ ∥ AB</text>
+  </g>
+
+  <g id="i-simX" class="layer hidden">
+    <polyline points="346.47,104.62 233.99,488.51 60.57,54.95 346.47,104.62" class="simTriX"/>
+    <polyline points="335.50,142.05 333.57,141.43 331.67,140.70 329.82,139.89 328.00,138.97 326.24,137.96 324.53,136.87 322.88,135.68 321.30,134.41 319.78,133.06 318.34,131.63 316.97,130.13 315.68,128.56 314.48,126.93 313.36,125.23 312.33,123.48 311.40,121.68 310.56,119.83 309.82,117.94 309.17,116.02 308.63,114.06 308.19,112.08 307.85,110.08 307.62,108.06 307.50,106.03 307.47,104.00 307.56,101.97 307.75,99.95 308.05,97.94" class="arc betaArc" /><text x="300.63" y="133.16" class="betaLabel">β</text>
+    <polyline points="243.55,455.88 242.77,455.66 241.99,455.46 241.20,455.28 240.41,455.12 239.61,454.98 238.82,454.85 238.01,454.75 237.21,454.66 236.41,454.60 235.60,454.55 234.79,454.52 233.98,454.51 233.18,454.52 232.37,454.55 231.56,454.60 230.76,454.66 229.95,454.75 229.15,454.86 228.35,454.98 227.56,455.12 226.77,455.29 225.98,455.47 225.19,455.67 224.42,455.89 223.64,456.12 222.88,456.38 222.12,456.65 221.36,456.94" class="arc alphaArc" /><text x="231.65" y="439.57" class="alphaLabel">α</text>
+    <polyline points="329.88,161.24 331.23,161.62 332.59,161.96 333.96,162.28 335.33,162.56 336.71,162.81 338.10,163.02 339.49,163.21 340.88,163.35 342.28,163.47 343.68,163.55 345.08,163.60 346.48,163.62 347.88,163.60 349.29,163.55 350.69,163.47 352.08,163.35 353.48,163.20 354.87,163.02 356.25,162.80 357.63,162.55 359.01,162.27 360.37,161.96 361.73,161.61 363.08,161.23 364.42,160.82 365.75,160.38 367.07,159.91 368.38,159.40" class="arc alphaArc2" /><text x="350.00" y="178.54" class="alphaLabel">α</text>
+    <text x="54" y="117" class="calloutText">∠DAX′ = β</text>
+    <text x="77" y="448" class="calloutText">∠ADX′ = α</text>
+    <text x="392" y="164" class="calloutText">∠DAC′ = α</text>
+    <text x="73" y="474" class="parallelConclusion">∠ADX′ = ∠DAC′ ⇒ DX′ ∥ AC</text>
+  </g>
+
+  <g id="i-simY" class="layer hidden">
+    <polyline points="346.47,104.62 233.99,488.51 471.86,318.6 346.47,104.62" class="simTriY"/>
+    <polyline points="333.54,148.76 334.83,149.12 336.13,149.44 337.44,149.72 338.75,149.97 340.07,150.17 341.40,150.34 342.74,150.47 344.07,150.56 345.41,150.61 346.75,150.62 348.09,150.59 349.43,150.52 350.76,150.42 352.09,150.28 353.42,150.09 354.74,149.87 356.05,149.61 357.36,149.31 358.65,148.98 359.94,148.60 361.21,148.19 362.48,147.75 363.72,147.26 364.96,146.74 366.18,146.19 367.38,145.59 368.56,144.97 369.73,144.31" class="arc gammaArc" /><text x="353.92" y="165.16" class="gammaAngleLabel">γ</text>
+    <polyline points="242.43,459.72 243.11,459.93 243.78,460.15 244.46,460.39 245.12,460.65 245.78,460.92 246.43,461.21 247.08,461.51 247.71,461.83 248.34,462.17 248.97,462.52 249.58,462.88 250.19,463.26 250.78,463.65 251.37,464.06 251.94,464.47 252.51,464.91 253.06,465.36 253.61,465.82 254.14,466.29 254.67,466.77 255.18,467.27 255.68,467.78 256.16,468.30 256.64,468.83 257.10,469.38 257.55,469.93 257.98,470.50 258.40,471.07" class="arc alphaArc" /><text x="260.06" y="451.83" class="alphaLabel">α</text>
+    <polyline points="295.20,141.24 296.09,142.44 297.00,143.63 297.94,144.80 298.91,145.94 299.91,147.06 300.93,148.15 301.98,149.22 303.05,150.27 304.15,151.29 305.27,152.28 306.41,153.24 307.58,154.18 308.77,155.09 309.98,155.97 311.21,156.83 312.46,157.65 313.73,158.44 315.02,159.21 316.32,159.94 317.65,160.64 318.99,161.31 320.34,161.95 321.71,162.55 323.10,163.12 324.49,163.66 325.90,164.17 327.32,164.64 328.76,165.08" class="arc alphaArc2" /><text x="301.29" y="168.20" class="alphaLabel">α</text>
+    <text x="416" y="170" class="calloutText">∠DAY′ = γ</text>
+    <text x="310" y="464" class="calloutText">∠ADY′ = α</text>
+    <text x="232" y="128" class="calloutText">∠B′AD = α</text>
+    <text x="305" y="505" class="parallelConclusion">∠ADY′ = ∠B′AD ⇒ DY′ ∥ AB</text>
+  </g>
+
+  <g id="i-sineXangles" class="layer hidden">
+    <polyline points="276.55,473.89 275.63,471.45 274.58,469.07 273.38,466.76 272.06,464.52 270.61,462.36 269.03,460.28 267.34,458.30 265.54,456.42 263.63,454.65 261.62,452.99 259.52,451.45 257.34,450.04 255.07,448.75 252.74,447.60 250.34,446.59 247.89,445.71 245.39,444.98 242.85,444.39 240.29,443.95 237.70,443.66 235.10,443.52 232.49,443.53 229.89,443.70 227.31,444.01 224.75,444.47 222.21,445.08 219.72,445.83 217.28,446.73" class="arc sumArc" /><text x="258.99" y="433.96" class="sumLabel">θ+α</text>
+    <polyline points="367.58,131.27 367.30,131.49 367.03,131.70 366.74,131.91 366.46,132.12 366.18,132.33 365.89,132.53 365.60,132.73 365.31,132.92 365.01,133.12 364.72,133.31 364.42,133.49 364.12,133.68 363.82,133.86 363.52,134.04 363.21,134.21 362.91,134.38 362.60,134.55 362.29,134.72 361.98,134.88 361.66,135.04 361.35,135.19 361.03,135.34 360.71,135.49 360.39,135.64 360.07,135.78 359.75,135.92 359.42,136.06 359.10,136.19" class="arc diffArc" /><text x="371.04" y="147.02" class="diffLabel">θ−α</text>
+    <polyline points="87.51,72.22 87.12,72.81 86.72,73.40 86.30,73.97 85.88,74.54 85.44,75.09 84.98,75.64 84.52,76.17 84.04,76.70 83.56,77.21 83.06,77.72 82.55,78.21 82.03,78.69 81.50,79.16 80.95,79.62 80.40,80.06 79.84,80.50 79.27,80.92 78.69,81.32 78.10,81.72 77.51,82.10 76.90,82.47 76.29,82.82 75.67,83.17 75.04,83.49 74.40,83.81 73.76,84.11 73.11,84.39 72.45,84.66" class="arc auxAngleArc" /><text x="90.51" y="91.18" class="auxAngleLabel">δ</text>
+    <polyline points="441.91,299.40 443.18,297.22 444.24,294.93 445.09,292.56 445.73,290.12 446.14,287.64 446.33,285.12 446.29,282.60 446.02,280.10 445.53,277.62 444.83,275.21 443.90,272.86 442.77,270.61 441.44,268.47 439.92,266.45 438.23,264.58 436.38,262.88 434.38,261.34 432.25,259.99 430.01,258.84 427.67,257.89 425.26,257.16 422.79,256.65 420.29,256.36 417.77,256.30 415.26,256.46 412.77,256.85 410.32,257.46 407.94,258.29" class="arc auxAngleArc" /><text x="451.49" y="256.90" class="auxAngleLabel">180°−δ</text>
+    <text x="30" y="225" class="angleExplain">△KDX′：KX′ 对角 θ+α；KD 对角 δ</text>
+    <text x="326" y="252" class="angleExplain">△KAC′：KC′ 对角 θ−α；KA 对角 180°−δ</text>
+  </g>
+
+  <g id="i-sineYangles" class="layer hidden">
+    <polyline points="263.31,478.44 263.20,478.14 263.09,477.84 262.98,477.54 262.87,477.24 262.75,476.94 262.63,476.64 262.50,476.35 262.38,476.05 262.25,475.76 262.11,475.47 261.98,475.18 261.84,474.89 261.70,474.60 261.55,474.32 261.40,474.03 261.25,473.75 261.10,473.47 260.94,473.19 260.78,472.91 260.62,472.64 260.45,472.36 260.28,472.09 260.11,471.82 259.94,471.55 259.76,471.28 259.58,471.02 259.40,470.75 259.22,470.49" class="arc diffArc" /><text x="274.89" y="467.45" class="diffLabel">θ−α</text>
+    <polyline points="376.89,143.03 374.62,144.73 372.25,146.29 369.80,147.71 367.27,148.99 364.67,150.11 362.01,151.09 359.29,151.91 356.54,152.57 353.75,153.08 350.93,153.42 348.10,153.59 345.27,153.61 342.43,153.45 339.62,153.14 336.82,152.66 334.06,152.02 331.34,151.22 328.67,150.27 326.06,149.17 323.51,147.91 321.05,146.51 318.67,144.97 316.38,143.29 314.19,141.49 312.12,139.56 310.15,137.51 308.31,135.36 306.60,133.10" class="arc sumArc" /><text x="337.52" y="167.99" class="sumLabel">θ+α</text>
+    <polyline points="495.43,333.71 494.32,335.32 493.10,336.84 491.78,338.27 490.36,339.61 488.86,340.85 487.27,341.98 485.60,343.00 483.87,343.89 482.08,344.67 480.24,345.32 478.36,345.84 476.44,346.22 474.51,346.47 472.56,346.59 470.61,346.57 468.67,346.42 466.74,346.13 464.83,345.70 462.96,345.15 461.14,344.47 459.36,343.66 457.65,342.72 456.00,341.68 454.43,340.52 452.95,339.25 451.56,337.88 450.26,336.42 449.08,334.87" class="arc auxAngleArc" /><text x="472.94" y="361.59" class="auxAngleLabel">180°−ε</text>
+    <polyline points="270.62,189.60 271.22,188.62 271.78,187.62 272.29,186.59 272.76,185.54 273.18,184.48 273.56,183.39 273.89,182.30 274.18,181.18 274.42,180.06 274.61,178.93 274.75,177.79 274.84,176.65 274.89,175.50 274.88,174.35 274.83,173.21 274.73,172.06 274.58,170.93 274.38,169.79 274.13,168.67 273.84,167.56 273.50,166.47 273.11,165.39 272.68,164.33 272.20,163.28 271.68,162.26 271.11,161.26 270.51,160.29 269.86,159.34" class="arc auxAngleArc" /><text x="289.88" y="173.98" class="auxAngleLabel">ε</text>
+    <text x="287" y="441" class="angleExplain">△KDY′：KY′ 对角 θ−α</text>
+    <text x="168" y="196" class="angleExplain">△KAB′：KB′ 对角 θ+α</text>
+  </g>
+
+  <g id="i-sineX" class="layer hidden">
+    <polyline points="561.45,376.03 233.99,488.51 60.57,54.95 561.45,376.03" class="triX" />
+    <polyline points="561.45,376.03 346.47,104.62 418.34,284.29 561.45,376.03" class="triX2" />
+  </g>
+  <g id="i-sineY" class="layer hidden">
+    <polyline points="561.45,376.03 233.99,488.51 471.86,318.60 561.45,376.03" class="triY" />
+    <polyline points="561.45,376.03 346.47,104.62 247.89,175.03 561.45,376.03" class="triY2" />
+  </g>
+  <g id="i-power" class="layer hidden">
+    <line x1="561.45" y1="376.03" x2="60.57" y2="54.95" class="powerLine strong" />
+    <line x1="561.45" y1="376.03" x2="290.23" y2="296.56" class="powerLine2 strong" />
+  </g>
+  <g id="i-sigma" class="layer hidden">
+    <circle cx="425.94" cy="-62.39" r="383.75" class="sigma" />
+    <text x="88.57" y="46.95" class="sigmaLabel">Σ：M,H′,X′,Y′ 共圆</text>
+  </g>
+</svg>
+
+      </div>
+    </div>
+  </section>
+  <aside class="explainCard">
+    <h2 id="stepTitle"></h2>
+    <div id="stepBody"></div>
+  </aside>
+</div>
+
+<section class="verify" id="verify">
+  <h3>Python 数值校验（只用于确认绘图满足条件，不代替证明）</h3>
+  <table><tr><td>∠BAD</td><td>38.1318658472</td></tr><tr><td>∠CAD</td><td>38.1318658472</td></tr><tr><td>∠AXM</td><td>38.1318658472</td></tr><tr><td>∠AYM</td><td>38.1318658472</td></tr><tr><td>AM·AD</td><td>13.5730947113</td></tr><tr><td>AX·AX′</td><td>13.5730947113</td></tr><tr><td>AY·AY′</td><td>13.5730947113</td></tr><tr><td>KX′·KY′</td><td>10.7400999244</td></tr><tr><td>KB′·KC′</td><td>10.7400999244</td></tr><tr><td>KM·KH′</td><td>10.7400999244</td></tr><tr><td>Y 到圆 ω 的半径误差</td><td>8.881784197e-16</td></tr></table>
+  <p class="small">
+    本图使用 A=(1.0, 5.0), B=(-6.0, 0.0), C=(3.0, 0.0)。例如四个角均约为 38.131866°；
+    三个点幂乘积均约为 10.740099924；最终 Y 到目标圆 ω 的半径误差约
+    8.88e-16。
+  </p>
+</section>
+
+<section class="proofCard">
+<h2>最后把整条证明压缩成“考试版”</h2>
+<p>
+设 α=½∠BAC。以 A 为中心作反演，取反演幂 r²=AM·AD，则 M↔D。
+原圆 Ω 经过 A，故反演为直线 ℓ，因而 B′、C′、X′、Y′ 共线。
+直线 BC 反演为圆 Γ，且 A、B′、M、H′、C′∈Γ。由 AH⊥BC 可知 AH′ 为 Γ 的直径，
+故 MH′⊥AD。令 K=MH′∩ℓ。M 为 AD 中点，因此 KM 是 AD 的垂直平分线，故 KA=KD；
+设 ∠KAD=∠ADK=θ。
+</p>
+<p>
+由 AM·AD=AX·AX′，且 ∠DAX′=∠XAM，得 △ADX′∼△AXM，
+于是 ∠ADX′=α；按图中位置得 DX′∥AC。同理 DY′∥AB。
+分别应用正弦定理可得
+KX′/KC′=sin(θ+α)/sin(θ−α)，
+KY′/KB′=sin(θ−α)/sin(θ+α)，
+故 KX′·KY′=KB′·KC′。
+另一方面，由 K 对 Γ 的点幂，
+KB′·KC′=KM·KH′。
+因此 KX′·KY′=KM·KH′，由点幂定理的逆知 M、H′、X′、Y′ 共圆。
+反演回去即得 D、H、X、Y 四点共圆。∎
+</p>
+</section>
+</div>
+
+<script>
+const steps = [{"title": "读题：先把条件分成 4 组", "show": ["o-base", "o-right"], "focus": "original", "html": "\n<p>目标是证明 <b>D、H、X、Y 四点共圆</b>。先不急着证明，先整理题设：</p>\n<div class=\"fact\"><b>圆：</b>A、B、C、X、Y 都在原外接圆 Ω 上。</div>\n<div class=\"fact\"><b>角平分：</b>AD 平分 ∠BAC。</div>\n<div class=\"fact\"><b>中点＋垂足：</b>M 是 AD 中点；AH ⟂ BC。</div>\n<div class=\"fact\"><b>两个特殊角：</b>∠AXM = ∠AYM = ½∠BAC。</div>\n<p class=\"tip\">图是 Python 按条件计算的精确代表性构图；证明本身不依赖这组具体坐标。</p>\n"}, {"title": "第 1 步：统一记号 α", "show": ["o-base", "o-right", "o-angles"], "focus": "original", "html": "\n<p>令</p>\n<div class=\"eq\">α = ½∠BAC。</div>\n<p>因为 AD 是角平分线，所以</p>\n<div class=\"eq\">∠BAD = ∠DAC = α。</div>\n<p>题目又给出</p>\n<div class=\"eq\">∠AXM = ∠AYM = α。</div>\n<details open><summary>为什么先设 α？</summary>\n<p>后面所有“平行线方向”都会来自同一个角 α。把四个相等的角统一成一个符号，能明显减少混乱。</p>\n</details>\n"}, {"title": "第 2 步：设计反演，让 M 和 D 互换", "show": ["o-base", "o-right", "o-angles", "o-inv-ref", "i-D"], "focus": "both", "html": "\n<p>以 <b>A 为反演中心</b>，选反演幂</p>\n<div class=\"eq\">r² = AM·AD。</div>\n<p>反演的定义是：若 P ↔ P′，则 A、P、P′ 共线，并且</p>\n<div class=\"eq\">AP·AP′ = r²。</div>\n<p>因为 A、M、D 共线，而且 AM·AD = r²，所以立刻得到</p>\n<div class=\"eq important\">M ↔ D。</div>\n<details><summary>“反演”到底做了什么？</summary>\n<p>它把距离变成 AP′ = r²/AP：靠近 A 的点被送得较远，较远的点被送得较近。反演是自己的逆变换，所以 M ↔ D 是双向的。</p>\n</details>\n"}, {"title": "第 3 步：原圆 Ω 被“拉直”", "show": ["o-base", "o-right", "i-base", "i-D"], "focus": "inverse", "html": "\n<p>原外接圆 Ω <b>经过反演中心 A</b>。反演的基本性质：</p>\n<div class=\"theorem\">经过反演中心的圆 → 一条不过反演中心的直线。</div>\n<p>所以 Ω 变成直线 ℓ。原来 B、C、X、Y 都在 Ω 上，于是它们的像满足</p>\n<div class=\"eq important\">B′、C′、X′、Y′ 共线。</div>\n<details><summary>为什么会从“圆”变“直线”？</summary>\n<p>精确结论来自反演定理。直观上，Ω 上的点越靠近 A，反演后距离 A 越大；经过 A 的闭合圆因此被展开成一条延伸到无穷远的直线。</p>\n</details>\n"}, {"title": "第 4 步：BC 变成圆 Γ，并得到一个关键直角", "show": ["o-base", "o-right", "i-base", "i-D", "i-gamma"], "focus": "inverse", "html": "\n<p>直线 BC <b>不经过 A</b>，所以反演后变成一个经过 A 的圆，记作 Γ。</p>\n<p>B、D、H、C 都在 BC 上；其中 D ↔ M，因此</p>\n<div class=\"eq\">A、B′、M、H′、C′ 在圆 Γ 上。</div>\n<p>又因为 AH ⟂ BC，可以推出 <b>AH′ 是 Γ 的直径</b>，从而</p>\n<div class=\"eq important\">∠AMH′ = 90°，即 MH′ ⟂ AD。</div>\n<details><summary>为什么 AH′ 是直径？一步推</summary>\n<p>任取 P∈BC，像为 P′。由 AP·AP′ = AH·AH′，可得 AP′/AH′ = AH/AP；而 ∠P′AH′ = ∠PAH。于是 △AP′H′ 与 △AHP 相似。因为 ∠AHP=90°，所以 ∠AP′H′=90°。因此所有像点 P′ 都落在以 AH′ 为直径的圆上。</p>\n</details>\n"}, {"title": "第 5 步：引入 K，得到 KA = KD", "show": ["i-base", "i-D", "i-gamma", "i-K"], "focus": "inverse", "html": "\n<p>令</p>\n<div class=\"eq\">K = MH′ ∩ ℓ。</div>\n<p>刚才得到 MH′ ⟂ AD；而 M 是 AD 的中点，所以直线 KM 就是 <b>AD 的垂直平分线</b>。</p>\n<div class=\"theorem\">垂直平分线上的点，到线段两端距离相等。</div>\n<p>因此</p>\n<div class=\"eq important\">KA = KD。</div>\n<p>所以 △KAD 是等腰三角形。记</p>\n<div class=\"eq\">∠KAD = ∠ADK = θ。</div>\n"}, {"title": "第 6A 步：以 X 为例，把 SAS 相似的每个角画出来", "show": ["o-base", "o-right", "o-simX", "i-base", "i-D", "i-gamma", "i-K", "i-parallel", "i-simX"], "focus": "both", "html": "\n<p>这一页只看 <b>X</b>。图上紫色角记作 β，红色角记作 α。</p>\n<p><b>① 两边成比例：</b>由反演定义</p>\n<div class=\"eq\">AM·AD = AX·AX′　⇒　AD/AX′ = AX/AM。</div>\n<p><b>② 夹角相等：</b>D、M 在同一射线 AD 上，X、X′ 在同一射线 AX 上，所以图中紫色的两个角其实由同两条射线构成：</p>\n<div class=\"eq\">∠DAX′ = ∠XAM = β。</div>\n<p>于是由 <b>SAS</b>：</p>\n<div class=\"eq important\">△ADX′ ∼ △AXM。</div>\n<p>对应顶点是 <b>D ↔ X</b>，所以红色对应角：</p>\n<div class=\"eq\">∠ADX′ = ∠AXM = α。</div>\n<p>又因为 C′ 与 C 在同一射线 AC 上，故</p>\n<div class=\"eq\">∠DAC′ = ∠DAC = α。</div>\n<p>现在图上两个红色 α 是由 transversal AD 形成的一对内错角，因此</p>\n<div class=\"eq important\">DX′ ∥ AC′，也就是 DX′ ∥ AC。</div>\n<p class=\"tip\">注意：β 只是为了标清 SAS 的“夹角”，它不需要等于 α。</p>\n"}, {"title": "第 6B 步：Y 完全同理，也把对应角全部标出来", "show": ["o-base", "o-right", "o-simY", "i-base", "i-D", "i-gamma", "i-K", "i-parallel", "i-simY"], "focus": "both", "html": "\n<p>现在只看 <b>Y</b>。蓝色角临时记作 γ，红色仍是 α。</p>\n<div class=\"eq\">AM·AD = AY·AY′　⇒　AD/AY′ = AY/AM。</div>\n<p>并且，由同一射线：</p>\n<div class=\"eq\">∠DAY′ = ∠YAM = γ。</div>\n<p>所以由 SAS：</p>\n<div class=\"eq important\">△ADY′ ∼ △AYM。</div>\n<p>对应顶点 D ↔ Y，因此</p>\n<div class=\"eq\">∠ADY′ = ∠AYM = α。</div>\n<p>又因为 B′ 与 B 在同一射线 AB 上：</p>\n<div class=\"eq\">∠B′AD = ∠BAD = α。</div>\n<p>图上的两个红色 α 是内错角，所以</p>\n<div class=\"eq important\">DY′ ∥ AB′，也就是 DY′ ∥ AB。</div>\n"}, {"title": "第 7A 步：X′ 这一侧的正弦定理——所有用到的角都在图上", "show": ["i-base", "i-D", "i-gamma", "i-K", "i-parallel", "i-sineX", "i-sineXangles"], "focus": "inverse", "html": "\n<p>先看 △KDX′。由 ∠ADK=θ、∠ADX′=α，图中橙色角为</p>\n<div class=\"eq\">∠KDX′ = θ+α。</div>\n<p>再看 △KAC′。按图中位置（也可用有向角），绿色角为</p>\n<div class=\"eq\">∠KAC′ = θ−α。</div>\n<p>令灰色角 ∠KX′D=δ。由于 K、X′、C′ 共线，且 DX′∥AC′，另一个灰色角满足</p>\n<div class=\"eq\">∠KC′A = 180°−δ，故 sin∠KC′A = sinδ。</div>\n<p>分别使用正弦定理：</p>\n<div class=\"eq\">KX′/sin(θ+α) = KD/sinδ，</div>\n<div class=\"eq\">KC′/sin(θ−α) = KA/sin(180°−δ)。</div>\n<p>再用 KA=KD 与 sin(180°−δ)=sinδ，相除得到</p>\n<div class=\"eq important\">KX′/KC′ = sin(θ+α)/sin(θ−α)。</div>\n"}, {"title": "第 7B 步：Y′ 这一侧的正弦定理——得到刚好倒过来的比例", "show": ["i-base", "i-D", "i-gamma", "i-K", "i-parallel", "i-sineY", "i-sineYangles"], "focus": "inverse", "html": "\n<p>对 Y′ 侧同样处理。图中已经把四个需要的角直接标出来：</p>\n<div class=\"eq\">∠KDY′ = θ−α，　∠KAB′ = θ+α。</div>\n<p>令 ∠KB′A=ε；由共线和平行关系，</p>\n<div class=\"eq\">∠KY′D = 180°−ε，故两角正弦相等。</div>\n<p>在 △KDY′、△KAB′ 分别用正弦定理，并用 KD=KA：</p>\n<div class=\"eq important\">KY′/KB′ = sin(θ−α)/sin(θ+α)。</div>\n<p class=\"tip\">现在可以直接从图上看到：X′ 侧和 Y′ 侧的两个比例恰好互为倒数。</p>\n"}, {"title": "第 8 步：把两个比例相乘", "show": ["i-base", "i-D", "i-gamma", "i-K", "i-parallel", "i-power"], "focus": "inverse", "html": "\n<p>把上一页两个式子相乘：</p>\n<div class=\"eq\">(KX′/KC′)·(KY′/KB′) = 1。</div>\n<p>整理：</p>\n<div class=\"eq important\">KX′·KY′ = KB′·KC′。　①</div>\n<p>这已经很像“点幂”的乘积形式了。下一步正好从圆 Γ 得到另一个完全相同类型的乘积。</p>\n"}, {"title": "第 9 步：对圆 Γ 使用点幂定理", "show": ["i-base", "i-D", "i-gamma", "i-K", "i-power"], "focus": "inverse", "html": "\n<p>圆 Γ 上有 B′、C′、M、H′。从 K 出发：</p>\n<div class=\"fact\">一条割线经过 B′、C′；另一条割线经过 M、H′。</div>\n<div class=\"theorem\">点幂定理：同一点 K 引两条割线，则“近点距离×远点距离”相等。</div>\n<p>所以</p>\n<div class=\"eq important\">KB′·KC′ = KM·KH′。　②</div>\n<p>结合 ①②：</p>\n<div class=\"eq important\">KX′·KY′ = KM·KH′。　③</div>\n"}, {"title": "第 10 步：点幂定理的逆定理 ⇒ 四点共圆", "show": ["i-base", "i-D", "i-gamma", "i-K", "i-power", "i-sigma"], "focus": "inverse", "html": "\n<p>K、X′、Y′ 共线；K、M、H′ 共线，并且已经有</p>\n<div class=\"eq\">KX′·KY′ = KM·KH′。</div>\n<div class=\"theorem\">点幂定理的逆：两条过 K 的直线上若四个点满足上述乘积关系，则四点共圆。</div>\n<p>因此</p>\n<div class=\"eq important\">M、H′、X′、Y′ 四点共圆。</div>\n<details><summary>逆定理怎么理解？</summary>\n<p>先过 M、H′、X′ 作一个圆，它与直线 KX′ 的另一个交点记作 T。点幂定理给 KX′·KT = KM·KH′。而题设乘积又等于 KX′·KY′，所以 KT=KY′，于是 T 就是 Y′。因此 Y′ 也在这个圆上。</p>\n</details>\n"}, {"title": "第 11 步：反演回原图，完成证明", "show": ["o-base", "o-right", "o-angles", "o-final", "i-base", "i-sigma"], "focus": "both", "html": "\n<p>反演对应关系是：</p>\n<div class=\"eq\">M ↔ D，　H′ ↔ H，　X′ ↔ X，　Y′ ↔ Y。</div>\n<p>刚才证明 M、H′、X′、Y′ 共圆。这个圆不经过反演中心 A，所以反演后仍然是一个圆。</p>\n<p>因此它反演回去正是一个经过 D、H、X、Y 的圆：</p>\n<div class=\"eq important final\">D、H、X、Y 四点共圆。 ∎</div>\n<p class=\"tip\">整条主线：把 Ω 拉直 → 用中点制造 KA=KD → 把角条件变成平行线 → 正弦定理得到乘积 → 点幂完成共圆。</p>\n"}];
+let idx=0, timer=null;
+const allGroups = [...document.querySelectorAll('.layer')];
+function render(){
+  const s=steps[idx];
+  document.getElementById('stepTitle').textContent=s.title;
+  document.getElementById('stepBody').innerHTML=s.html;
+  document.getElementById('counter').textContent=(idx+1)+' / '+steps.length;
+  document.getElementById('bar').style.width=((idx+1)/steps.length*100)+'%';
+  allGroups.forEach(g=>g.classList.add('hidden'));
+  // 教学版：原图始终作为参照保留，避免中间步骤丢失 B、C 和圆 O。
+  ['o-base','o-right'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.classList.remove('hidden');
+  });
+  s.show.forEach(id=>{const el=document.getElementById(id); if(el) el.classList.remove('hidden')});
+  const op=document.getElementById('origPanel'), ip=document.getElementById('invPanel');
+  op.classList.toggle('dim',s.focus==='inverse');
+  ip.classList.toggle('dim',s.focus==='original');
+  document.getElementById('prev').disabled=idx===0;
+  document.getElementById('next').disabled=idx===steps.length-1;
+}
+document.getElementById('prev').onclick=()=>{if(idx>0){idx--;render()}};
+document.getElementById('next').onclick=()=>{if(idx<steps.length-1){idx++;render()}};
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight' && idx<steps.length-1){idx++;render()}
+  if(e.key==='ArrowLeft' && idx>0){idx--;render()}
+});
+document.getElementById('verifyBtn').onclick=()=>{
+  const v=document.getElementById('verify');
+  const show=getComputedStyle(v).display==='none';
+  v.style.display=show?'block':'none';
+  document.getElementById('verifyBtn').textContent=show?'隐藏 Python 数值验证':'显示 Python 数值验证';
+};
+document.getElementById('auto').onclick=()=>{
+  const b=document.getElementById('auto');
+  if(timer){clearInterval(timer);timer=null;b.textContent='自动播放';return}
+  b.textContent='停止播放';
+  timer=setInterval(()=>{
+    if(idx>=steps.length-1){clearInterval(timer);timer=null;b.textContent='自动播放';return}
+    idx++; render();
+  },2600);
+};
+render();
+</script>
+</body>
+</html>
