@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 660">
+<style>
+.bg{fill:#fff} .circ{fill:none;stroke:#172033;stroke-width:2.5} .side{stroke:#263348;stroke-width:2.4} .bis{stroke:#dc2626;stroke-width:2.6} .alt{stroke:#0f766e;stroke-width:2.1;stroke-dasharray:7 5} .given{stroke:#7c3aed;stroke-width:1.8} .given2{stroke:#7c3aed;stroke-width:1.5;stroke-dasharray:5 4} .pt{fill:#172033;stroke:#fff;stroke-width:1.4} .lab{font:700 17px system-ui,-apple-system,"PingFang SC";fill:#172033;paint-order:stroke;stroke:#fff;stroke-width:4px} .name{font:700 16px system-ui,-apple-system,"PingFang SC";fill:#526076} .right{fill:none;stroke:#0f766e;stroke-width:2}
+</style>
+<rect width="100%" height="100%" class="bg"/>
+<circle cx="348.12" cy="348.12" r="279.84" class="circ"/>
+
+<line x1="499.14" y1="112.53" x2="76.29" y2="414.57" class="side"/><line x1="499.14" y1="112.53" x2="619.96" y2="414.57" class="side"/><line x1="76.29" y1="414.57" x2="619.96" y2="414.57" class="side"/>
+<line x1="499.14" y1="112.53" x2="410.65" y2="414.57" class="bis"/><line x1="499.14" y1="112.53" x2="499.14" y2="414.57" class="alt"/>
+<line x1="499.14" y1="112.53" x2="285.40" y2="75.40" class="given"/><line x1="285.40" y1="75.40" x2="454.89" y2="263.55" class="given2"/><line x1="499.14" y1="112.53" x2="627.47" y2="331.53" class="given"/><line x1="627.47" y1="331.53" x2="454.89" y2="263.55" class="given2"/>
+<circle cx="499.14" cy="112.53" r="5" class="pt"/><text x="508.14" y="102.53" class="lab">A</text><circle cx="76.29" cy="414.57" r="5" class="pt"/><text x="56.29" y="432.57" class="lab">B</text><circle cx="619.96" cy="414.57" r="5" class="pt"/><text x="628.96" y="432.57" class="lab">C</text><circle cx="410.65" cy="414.57" r="5" class="pt"/><text x="393.65" y="434.57" class="lab">D</text><circle cx="499.14" cy="414.57" r="5" class="pt"/><text x="507.14" y="434.57" class="lab">H</text><circle cx="454.89" cy="263.55" r="5" class="pt"/><text x="463.89" y="254.55" class="lab">M</text><circle cx="285.40" cy="75.40" r="5" class="pt"/><text x="265.40" y="66.40" class="lab">X</text><circle cx="627.47" cy="331.53" r="5" class="pt"/><text x="636.47" y="323.53" class="lab">Y</text>
+<text x="524.42" y="163.43" class="name">圆 O</text>
+<path d="M 484.14,414.57 L 484.14,399.57 L 499.14,399.57" class="right"/>
+</svg>
