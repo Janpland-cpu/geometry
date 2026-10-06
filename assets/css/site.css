@@ -126,7 +126,10 @@ button { color: inherit; }
 .statement p { margin: 0 0 12px; }
 .goal { margin-top: 14px; padding: 12px 14px; background: var(--green-soft); border: 1px solid #bde9ca; border-radius: 10px; }
 .figure-wrap { padding: 14px; }
+.figure-link { display: block; border-radius: 12px; overflow: hidden; }
+.figure-link:hover img { opacity: .97; }
 .figure-wrap img { display: block; width: 100%; height: auto; border-radius: 12px; background: white; }
+.figure-zoom-hint { white-space: nowrap; }
 .figure-caption { padding: 0 16px 14px; color: var(--muted); font-size: 12px; text-align: center; }
 .side-card { padding: 18px; }
 .meta-list { display: grid; gap: 12px; }

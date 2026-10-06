@@ -60,8 +60,10 @@
           </article>
 
           <article class="panel figure-wrap">
-            <img src="${data.figure}" alt="${data.figureAlt || "题目示意图"}">
-            <div class="figure-caption">示意图按题设精确构造；证明不依赖图形的具体比例。</div>
+            <a class="figure-link" href="${data.figure}" target="_blank" rel="noopener" title="查看原尺寸图">
+              <img src="${data.figure}" alt="${data.figureAlt || "题目示意图"}">
+            </a>
+            <div class="figure-caption">${data.figureCaption || "示意图按题设精确构造；证明不依赖图形的具体比例。"} <span class="figure-zoom-hint">点击图可查看原尺寸。</span></div>
           </article>
 
           <section aria-labelledby="solutionsTitle">
@@ -83,7 +85,7 @@
           </section>
 
           <section class="panel demo-card">
-            <h2 class="panel-title">${data.solutions.length} 种思路怎么选？</h2>
+            <h2 class="panel-title">${data.solutions.length > 1 ? `${data.solutions.length} 种思路怎么选？` : "方法特点"}</h2>
             <table class="compare-table">
               <thead><tr><th>解法</th><th>特点</th></tr></thead>
               <tbody>
@@ -131,7 +133,7 @@
     panel.innerHTML = `
       <header class="solution-head">
         <div><h2>${solution.title}</h2><p>${solution.summary}</p></div>
-        ${solution.demo ? `<a class="btn primary" target="_blank" rel="noopener" href="${solution.demo}">打开互动演示 ↗</a>` : ""}
+        ${solution.demo ? `<a class="btn primary" target="_blank" rel="noopener" href="${solution.demo}">${solution.demoLabel || "打开互动演示 ↗"}</a>` : ""}
       </header>
       <div class="solution-body">
         <div class="step-list">

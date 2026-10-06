@@ -1,13 +1,16 @@
 # 数学习题集（GitHub Pages 静态网站）
 
-这是一个 **无框架、无数据库、无需构建** 的静态习题集。
+这是一个 **无框架、无数据库、无需构建** 的静态习题集。把仓库直接部署到 GitHub Pages 就能使用。
+
 当前已经包含：
 
 - `GEO-001 角平分线、中点与四点共圆`
-- 解法一：反演
-- 解法二：相似（旋转位似）＋根心定理
-- 解法三：白板法——相似＋根心＋点幂连锁
-- 三个独立的逐步互动演示 HTML
+  - 解法一：相似＋根心＋点幂连锁
+  - 解法二：辅助圆＋相似＋根心
+  - 解法三：反演
+- `CON-001 隐藏坐标轴的抛物线：还原 y=x² 的坐标轴`
+- `CON-002 隐藏坐标轴的三次曲线：还原 y=x³ 的坐标轴`
+- `CON-003 只给 y=1/x 第一象限分支：还原坐标轴`
 - 首页搜索、标签筛选、已掌握标记（保存在浏览器 localStorage）
 
 ## 目录结构
@@ -16,7 +19,7 @@
 math-exercise-book/
 ├─ index.html                    # 首页 / 习题目录
 ├─ problem.html                  # 通用习题详情页
-├─ about.html                    # 网站结构 / 维护说明页
+├─ about.html                    # 面向读者的使用说明 / 内容约定
 ├─ .nojekyll                     # GitHub Pages 不经过 Jekyll
 ├─ README.md
 ├─ ADD_PROBLEM.md                # 新增习题的最短流程
@@ -33,11 +36,27 @@ math-exercise-book/
    │  └─ demos/
    │     ├─ inversion.html
    │     ├─ similarity-radical-center.html
-   │     └─ whiteboard-radical-center.html
+   │     └─ power-chain-radical-center.html
+   ├─ con-001/                 # y=x² 尺规还原
+   ├─ con-002/                 # y=x³ 尺规还原
+   ├─ con-003/                 # y=1/x 第一象限分支尺规还原
    └─ _template/
       ├─ data.example.js
       └─ figure.example.svg
 ```
+
+## 上传到 GitHub Pages
+
+1. 在 GitHub 新建一个仓库，例如 `math-exercise-book`。
+2. 把本文件夹里的 **全部文件和文件夹** 上传到仓库根目录。
+3. 打开仓库 `Settings → Pages`。
+4. 在 `Build and deployment` 选择 `Deploy from a branch`。
+5. Branch 选择 `main`，Folder 选择 `/ (root)`，保存。
+6. 等待 GitHub 部署完成，即可获得网址：
+
+   `https://你的用户名.github.io/仓库名/`
+
+整个站点只使用相对路径，因此仓库名可以任意修改。
 
 ## 本地预览
 

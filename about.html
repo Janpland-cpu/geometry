@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="数学习题集网站的结构与维护说明。">
-  <title>关于这个习题集</title>
+  <meta name="description" content="关于数学习题集的阅读方式、内容约定与复习方法。">
+  <title>关于 | 数学习题集</title>
   <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/css/site.css">
 </head>
@@ -12,41 +12,62 @@
   <header class="site-header">
     <div class="shell nav-row">
       <a class="brand" href="index.html"><span class="brand-mark">∠</span><span><strong>数学习题集</strong><small>Math Exercise Book</small></span></a>
-      <nav class="top-nav"><a href="index.html">习题</a><a class="active" href="about.html">说明</a></nav>
+      <nav class="top-nav" aria-label="主导航"><a href="index.html">习题</a><a class="active" href="about.html">关于</a></nav>
     </div>
   </header>
+
   <main class="shell problem-shell">
     <section class="problem-hero">
-      <div class="problem-heading"><div class="problem-code">ABOUT</div><h1>结构简单，方便一直往里加题。</h1><div class="problem-subline">没有框架、数据库或构建流程；GitHub Pages 可以直接托管。</div></div>
+      <div class="problem-heading">
+        <div class="problem-code">ABOUT</div>
+        <h1>把一道题真正看懂，而不只是看完答案。</h1>
+        <div class="problem-subline">题目、精确图形、多种证明与关键定理放在同一处，方便比较与复习。</div>
+      </div>
     </section>
+
     <div class="problem-layout">
       <div class="stack">
         <article class="panel"><div class="panel-inner">
-          <h2 class="panel-title">网站怎么组织</h2>
-          <p>首页只读取一份目录清单；每道题自己保存在 <code>problems/&lt;id&gt;/</code> 下。详情页只有一个通用的 <code>problem.html</code>，所以以后增加几十道题也不需要复制整套页面。</p>
-          <div class="formula">目录负责“有哪些题”　·　题目文件负责“这道题写什么”</div>
-        </div></article>
-        <article class="panel"><div class="panel-inner">
-          <h2 class="panel-title">新增一道题：4 步</h2>
+          <h2 class="panel-title">推荐阅读顺序</h2>
           <div class="step-list">
-            <section class="step-card"><span class="step-number">1</span><h3>复制模板</h3><p>复制 <code>problems/_template/</code>，改名为例如 <code>geo-002/</code>。</p></section>
-            <section class="step-card"><span class="step-number">2</span><h3>填写 data.js</h3><p>写题目、目标、标签以及一个或多个解法步骤。</p></section>
-            <section class="step-card"><span class="step-number">3</span><h3>放示意图</h3><p>推荐 SVG；如果有互动演示，再放进该题自己的 <code>demos/</code>。</p></section>
-            <section class="step-card"><span class="step-number">4</span><h3>登记到目录</h3><p>在 <code>assets/js/catalog.js</code> 增加一条元数据。推送 GitHub 后首页自动出现新题。</p></section>
+            <section class="step-card"><span class="step-number">1</span><h3>先独立读题</h3><p>先确认已知、目标与图中对象，不急着展开解答。</p></section>
+            <section class="step-card"><span class="step-number">2</span><h3>看图找结构</h3><p>注意中点、垂直、共圆、平行弦等结构；图形用于帮助理解，但证明不依赖视觉比例。</p></section>
+            <section class="step-card"><span class="step-number">3</span><h3>按顺序看解法</h3><p>多解法题会把较适合作为主线阅读的方案放在前面。遇到陌生定理，可在对应步骤直接查看解释。</p></section>
+            <section class="step-card"><span class="step-number">4</span><h3>合上证明再复述</h3><p>尝试只凭关键等式或构造复述整条逻辑链；能够复述主线，通常比记住细节更重要。</p></section>
           </div>
         </div></article>
+
         <article class="panel"><div class="panel-inner">
-          <h2 class="panel-title">部署到 GitHub Pages</h2>
-          <p>把全部文件上传到仓库根目录，然后进入 <strong>Settings → Pages</strong>，选择 <strong>Deploy from a branch</strong>，分支选 <strong>main</strong>，目录选 <strong>/(root)</strong>。</p>
-          <p>详细维护说明同时保存在仓库的 <code>README.md</code> 与 <code>ADD_PROBLEM.md</code>。</p>
+          <h2 class="panel-title">图与证明的约定</h2>
+          <p>几何图和尺规作图图解尽量采用解析坐标精确生成，以避免辅助点和角度关系被示意图误导。</p>
+          <div class="formula">精确作图用于核对结构　·　一般性证明仍以定理和推导为准</div>
+          <p>若某一步使用点幂、根轴、根心、相似、韦达定理等工具，会尽量说明它在该题中具体对应哪几个点、哪几个量。</p>
+        </div></article>
+
+        <article class="panel"><div class="panel-inner">
+          <h2 class="panel-title">尺规还原类题目的约定</h2>
+          <p>这类题只给出某条曲线，原点与坐标轴不再标记。目标是通过有限次直尺、圆规可实现的操作，恢复隐藏的坐标结构，并证明构造为什么成立。</p>
+          <p>其中“作中点、作垂线、作平行线、作角平分线、按给定比例分点”等均视为标准尺规操作。</p>
         </div></article>
       </div>
+
       <aside class="stack">
-        <section class="panel side-card"><h2 class="panel-title">设计原则</h2><div class="meta-list"><div class="meta-item"><span>复杂度</span><strong>纯 HTML / CSS / JavaScript</strong></div><div class="meta-item"><span>数据</span><strong>每题一个 data.js</strong></div><div class="meta-item"><span>公式</span><strong>原生 HTML，不依赖 CDN</strong></div><div class="meta-item"><span>进度</span><strong>浏览器 localStorage</strong></div><div class="meta-item"><span>部署</span><strong>GitHub Pages</strong></div></div></section>
-        <section class="panel demo-card"><h2 class="panel-title">为什么这样做</h2><p>现在只有一道题时仍然简单；以后题目变多时，也不需要重构。互动解法是可选附件，不会把整个站点绑死在某一种呈现方式上。</p></section>
+        <section class="panel side-card">
+          <h2 class="panel-title">当前内容</h2>
+          <div class="meta-list">
+            <div class="meta-item"><span>平面几何</span><strong>圆、相似、点幂、根轴、反演</strong></div>
+            <div class="meta-item"><span>尺规作图</span><strong>由曲线恢复隐藏坐标轴</strong></div>
+            <div class="meta-item"><span>呈现方式</span><strong>多解法 / 逐步证明 / 精确图解</strong></div>
+          </div>
+        </section>
+        <section class="panel demo-card">
+          <h2 class="panel-title">复习标记</h2>
+          <p>每道题右上角可以标记“已掌握”。这个标记只用于当前浏览器中的个人复习进度。</p>
+        </section>
       </aside>
     </div>
   </main>
+
   <footer class="site-footer"><div class="shell footer-row"><span>数学习题集</span><a href="index.html">返回习题目录</a></div></footer>
 </body>
 </html>
