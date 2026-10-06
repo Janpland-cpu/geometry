@@ -1,7 +1,6 @@
 # 数学习题集（GitHub Pages 静态网站）
 
-这是一个 **无框架、无数据库、无需构建** 的静态习题集。把仓库直接部署到 GitHub Pages 就能使用。
-
+这是一个 **无框架、无数据库、无需构建** 的静态习题集。
 当前已经包含：
 
 - `GEO-001 角平分线、中点与四点共圆`
@@ -39,19 +38,6 @@ math-exercise-book/
       ├─ data.example.js
       └─ figure.example.svg
 ```
-
-## 上传到 GitHub Pages
-
-1. 在 GitHub 新建一个仓库，例如 `math-exercise-book`。
-2. 把本文件夹里的 **全部文件和文件夹** 上传到仓库根目录。
-3. 打开仓库 `Settings → Pages`。
-4. 在 `Build and deployment` 选择 `Deploy from a branch`。
-5. Branch 选择 `main`，Folder 选择 `/ (root)`，保存。
-6. 等待 GitHub 部署完成，即可获得网址：
-
-   `https://你的用户名.github.io/仓库名/`
-
-整个站点只使用相对路径，因此仓库名可以任意修改。
 
 ## 本地预览
 
